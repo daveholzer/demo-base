@@ -10,6 +10,8 @@ exports.handler = async ({ body, headers }, context) => {
       headers['stripe-signature'],
       process.env.STRIPE_WEBHOOK_SECRET,
     );
+    console.log('headers', headers)
+    console.log('event', stripeEvent)
 
     // bail if this is not a subscription update event
     if (stripeEvent.type !== 'customer.subscription.updated') return;
@@ -30,7 +32,7 @@ exports.handler = async ({ body, headers }, context) => {
     });
 
     const { netlifyID } = result.data.getUserByStripeID;
-
+    console.log('sub', subscription)
     // take the first word of the plan name and use it as the role
     const plan = subscription.items.data[0].plan.nickname;
     const role = plan.split(' ')[0].toLowerCase();
