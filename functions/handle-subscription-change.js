@@ -33,16 +33,17 @@ exports.handler = async ({ body, headers }, context) => {
     
     // take the first word of the plan name and use it as the role
     const plan = subscription.items.data[0].plan;
-    console.log('plan', plan)
-    let role = 'free'
-    if (plan.id === 'price_1IlbtPKxERiIUUWCT8aOltKt' || 
-        plan.id === 'price_1IlbtPKxERiIUUWColigimsH') {
-      role = 'premium'
-    }
-    if (plan.id === 'price_1Ilbs4KxERiIUUWCj5oINXL6' || 
-        plan.id === 'price_1Ilbs4KxERiIUUWCytJKGYG5') {
-      role = 'pro'
-    }
+    const role = plan.metadata['name']
+    console.log('plan', plan, role)
+    // let role = 'free'
+    // if (plan.id === 'price_1IlbtPKxERiIUUWCT8aOltKt' || 
+    //     plan.id === 'price_1IlbtPKxERiIUUWColigimsH') {
+    //   role = 'premium'
+    // }
+    // if (plan.id === 'price_1Ilbs4KxERiIUUWCj5oINXL6' || 
+    //     plan.id === 'price_1Ilbs4KxERiIUUWCytJKGYG5') {
+    //   role = 'pro'
+    // }
     // const role = plan.split(' ')[0].toLowerCase();
 
     // send a call to the Netlify Identity admin API to update the user role
