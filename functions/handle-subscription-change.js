@@ -10,8 +10,6 @@ exports.handler = async ({ body, headers }, context) => {
       headers['stripe-signature'],
       process.env.STRIPE_WEBHOOK_SECRET,
     );
-    console.log('headers', headers)
-    console.log('event', stripeEvent)
 
     // bail if this is not a subscription update event
     if (stripeEvent.type !== 'customer.subscription.updated') return;
@@ -32,10 +30,20 @@ exports.handler = async ({ body, headers }, context) => {
     });
 
     const { netlifyID } = result.data.getUserByStripeID;
-    console.log('sub', subscription)
+    
     // take the first word of the plan name and use it as the role
-    const plan = subscription.items.data[0].plan.nickname;
-    const role = plan.split(' ')[0].toLowerCase();
+    const plan = subscription.items.data[0].plan;
+    console.log('plan', plan)
+    let role = 'free'
+    if (plan.id === 'price_1IlbtPKxERiIUUWCT8aOltKt' || 
+        plan.id === 'price_1IlbtPKxERiIUUWColigimsH') {
+      role = 'premium'
+    }
+    if (plan.id === 'price_1Ilbs4KxERiIUUWCj5oINXL6' || 
+        plan.id === 'price_1Ilbs4KxERiIUUWCytJKGYG5') {
+      role = 'pro'
+    }
+    // const role = plan.split(' ')[0].toLowerCase();
 
     // send a call to the Netlify Identity admin API to update the user role
     const { identity } = context.clientContext;
